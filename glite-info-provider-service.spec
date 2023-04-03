@@ -29,7 +29,7 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-%dir ${_sysconfdir}/glite/info/service
+%dir %{_sysconfdir}/glite/info/service
 %{_bindir}/glite-info-glue2-service
 %{_bindir}/glite-info-glue2-endpoint
 %{_bindir}/glite-info-glue2-simple
@@ -113,8 +113,8 @@ rm -rf %{buildroot}
 %doc %{_docdir}/%{name}-%{version}/README
 %doc %{_docdir}/%{name}-%{version}/README-GLUE2
 %doc %{_docdir}/%{name}-%{version}/AUTHORS.md
-%license ${_datadir}/licenses/%{name}-%{version}/COPYRIGHT
-%license ${_datadir}/licenses/%{name}-%{version}/LICENSE.txt
+%license %{_datadir}/licenses/%{name}-%{version}/COPYRIGHT
+%license %{_datadir}/licenses/%{name}-%{version}/LICENSE.txt
 
 %changelog
 * Mon Apr 03 2023 Baptiste Grenier <baptiste.grenier@egi.eu> - 1.14.0-1
