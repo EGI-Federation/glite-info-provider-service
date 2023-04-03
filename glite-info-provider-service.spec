@@ -125,7 +125,7 @@ rm -rf %{buildroot}
 - Patch for the RTEPublisher start time, GGUS #107264
 - Publish the schema version as OtherInfo for the site and top BDII
 
-* Thu Apr 15 2014 Stephen Burke <stephen.burke@stfc.ac.uk> - 1.13.3-1
+* Tue Apr 15 2014 Stephen Burke <stephen.burke@stfc.ac.uk> - 1.13.3-1
 - Change the RPM name for the tag publisher version, bug #102207
 
 * Thu Aug 01 2013 Stephen Burke <stephen.burke@stfc.ac.uk> - 1.13.1-1
