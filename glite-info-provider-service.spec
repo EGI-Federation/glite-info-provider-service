@@ -4,7 +4,7 @@ Release:       1%{?dist}
 Summary:       The GLUE service information provider
 Group:         Development/Libraries
 License:       ASL 2.0
-URL:           https://github.com/EGI-Federation/glite-info-provider-ldap
+URL:           https://github.com/EGI-Federation/glite-info-provider-service
 Source:        %{name}-%{version}.tar.gz
 BuildArch:     noarch
 BuildRoot:     %{_tmppath}/%{name}-%{version}-build
