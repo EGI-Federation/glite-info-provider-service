@@ -1,5 +1,5 @@
 Name:          glite-info-provider-service
-Version:       1.13.4
+Version:       1.14.0
 Release:       1%{?dist}
 Summary:       The GLUE service information provider
 Group:         Development/Libraries
@@ -117,6 +117,10 @@ rm -rf %{buildroot}
 %license ${_datadir}/licenses/%{name}-%{version}/LICENSE.txt
 
 %changelog
+* Mon Apr 03 2023 Baptiste Grenier <baptiste.grenier@egi.eu> - 1.14.0-1
+- Add Community files and GitHub actions. (#2) (Baptiste Grenier)
+- Build and release using CentOS 7, AlmaLinux 8 and 9. (#2) (Baptiste Grenier)
+
 * Mon Aug 04 2014 Stephen Burke <stephen.burke@stfc.ac.uk> - 1.13.4-1
 - Patch for the RTEPublisher start time, GGUS #107264
 - Publish the schema version as OtherInfo for the site and top BDII
