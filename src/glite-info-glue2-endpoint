@@ -145,7 +145,7 @@ my %config = (
 
 # Read in the configuration file
 
-my $fh = new FileHandle $confile
+my $fh = FileHandle->new($confile)
   or die "Error: Can't open configuration file: $confile\n";
 
 foreach (<$fh>) {
@@ -419,7 +419,7 @@ if ($OSVersion) {
 
 # Version number for EMI if it exists
 
-if ( my $ev = new FileHandle $emiversion) {
+if ( my $ev = FileHandle->new($emiversion) ) {
     foreach (<$ev>) {
         s/\s+//g;
         if ($_) {

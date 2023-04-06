@@ -107,7 +107,7 @@ my %config = (
 # Process the service config file if it exists
 
 if ($Service_conf) {
-    my $fh = new FileHandle $Service_conf
+    my $fh = FileHandle->new($Service_conf)
       or die "Error: Can't open configuration file: $Service_conf\n";
     foreach (<$fh>) {
         if ( ( !m/^\#/ ) & (m/=/) ) {

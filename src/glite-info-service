@@ -89,7 +89,7 @@ my %config = (
 
 if ( $ARGV[0] ) {
     $confile = $ARGV[0];
-    my $fh = new FileHandle $confile
+    my $fh = FileHandle->new($confile)
       or die "Error: Can't open configuration file: $ARGV[0]\n";
     foreach (<$fh>) {
         if ( ( !m/^\#/ ) & (m/=/) ) {
