@@ -5,10 +5,10 @@
 # and also to attempt to remove pids from the output as some people
 # don't like them and they anyway don't add any information
 
-if [ "x$1" == "x" ]; then
-    echo Service name missing
-# Returning 3 will give Unknown
-    exit 3
+if [ "$1" == "" ]; then
+	echo Service name missing
+	# Returning 3 will give Unknown
+	exit 3
 fi
 
 service=$1
@@ -18,23 +18,22 @@ shift
 export LANG=C
 
 # Collect the stdout and return code from service status
-string=`/sbin/service $service status $@`
+string=$(/sbin/service "$service" status $@)
 rc=$?
 
 # Strip out the standard representation of pids
-echo $string | sed 's/(pid .*) //'
+echo "$string" | sed 's/(pid .*) //'
 
 if [ $rc -eq 0 ]; then
-    exit 0
+	exit 0
 elif [ $rc -lt 4 ]; then
-# Values of 1 to 3 all indicate that the service is not running,
-# so return as 1 = Critical
-    exit 1
+	# Values of 1 to 3 all indicate that the service is not running,
+	# so return as 1 = Critical
+	exit 1
 elif [ $rc -eq 4 ]; then
-# 4 means Unknown, translated to 3
-    exit 3
+	# 4 means Unknown, translated to 3
+	exit 3
 else
-# Larger values returned as-is, which will translate to Other
-    exit $rc
+	# Larger values returned as-is, which will translate to Other
+	exit $rc
 fi
-
