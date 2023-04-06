@@ -31,3 +31,5 @@ jobs:
           VALIDATE_ALL_CODEBASE: true
           # Fail on errors
           DISABLE_ERRORS: false
+          # XXX: Not working, see https://github.com/github/super-linter/issues/3552
+          VALIDATE_GITLEAKS: false
