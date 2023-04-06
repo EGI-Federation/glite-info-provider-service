@@ -31,20 +31,20 @@
 #        automatically constructed)
 #
 #
-# Copyright (c) Members of the EGEE Collaboration. 2007-2010. 
+# Copyright (c) Members of the EGEE Collaboration. 2007-2010.
 # See http://www.eu-egee.org/partners/ for details on the copyright
 # holders.
 #
-#     Licensed under the Apache License, Version 2.0 (the "License"); 
-# you may not use this file except in compliance with the License. 
+#     Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#   http://www.apache.org/licenses/LICENSE-2.0 
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
-# Unless required by applicable law or agreed to in writing, software 
-# distributed under the License is distributed on an "AS IS" BASIS, 
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
-# See the License for the specific language governing permissions and 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
 # limitations under the License.
 #
 
@@ -70,66 +70,75 @@ my $SiteID = $ARGV[1];
 # Read in the configuration file (first argument)
 
 my %config = (
-# New attribute for the Site ID - predefining as "echo" makes it optional
-	get_site_id => 'echo',
-        init => '',
-        service_type => '',
-        get_version => '',
-        get_endpoint => '',
-        get_status => '',
-        WSDL_URL => '',
-        semantics_URL => '',
-        get_starttime => '',
-        get_owner => '',
-        get_acbr => '',
-	get_data => '',
-        get_services => '',
-	      );
 
-if ($ARGV[0]){
+    # New attribute for the Site ID - predefining as "echo" makes it optional
+    get_site_id   => 'echo',
+    init          => '',
+    service_type  => '',
+    get_version   => '',
+    get_endpoint  => '',
+    get_status    => '',
+    WSDL_URL      => '',
+    semantics_URL => '',
+    get_starttime => '',
+    get_owner     => '',
+    get_acbr      => '',
+    get_data      => '',
+    get_services  => '',
+);
+
+if ( $ARGV[0] ) {
     $confile = $ARGV[0];
     my $fh = new FileHandle $confile
-        or die "Error: Can't open configuration file: $ARGV[0]\n";
-    foreach (<$fh>){
-        if ((! m/^\#/) & (m/=/)){
-# For lines containing an = and not starting with #
+      or die "Error: Can't open configuration file: $ARGV[0]\n";
+    foreach (<$fh>) {
+        if ( ( !m/^\#/ ) & (m/=/) ) {
+
+            # For lines containing an = and not starting with #
             m/^(.*?)=\s*(.*)\s*$/;
-# Split on the first =, no leading or trailing whitespace in the value
-            my $key=$1;
-            my $value=$2;
-            $key=~s/\s+//g;
-            $config{$key}=$value;
+
+          # Split on the first =, no leading or trailing whitespace in the value
+            my $key   = $1;
+            my $value = $2;
+            $key =~ s/\s+//g;
+            $config{$key} = $value;
         }
     }
-}else{
-    print STDERR "Usage: glite-info-service <config-file> [<site-ID> [<service-ID>]]\n";
+}
+else {
+    print STDERR
+      "Usage: glite-info-service <config-file> [<site-ID> [<service-ID>]]\n";
     exit 1;
 }
 
 # Check that all configuration items are set
 
 my $missing = 0;
-while ( my ($key, $value) = each(%config) ) {
-    if ( ! $config{$key} ){
+while ( my ( $key, $value ) = each(%config) ) {
+    if ( !$config{$key} ) {
         print STDERR "Error: configuration parameter $key not set\n";
         $missing += 1;
     }
 }
-if ( $missing ){
-    print STDERR "Error: $missing configuration parameter(s) not set in file $confile\n";
+if ($missing) {
+    print STDERR
+      "Error: $missing configuration parameter(s) not set in file $confile\n";
     exit 2;
 }
 
-if (!$SiteID) {
-# An explicit argument takes precedence over the config file
+if ( !$SiteID ) {
+
+    # An explicit argument takes precedence over the config file
     $command = $config{get_site_id};
-    $SiteID = `$command`;
-# No whitespace in IDs
+    $SiteID  = `$command`;
+
+    # No whitespace in IDs
     $SiteID =~ s/\s+//g;
 }
 
-if (!$SiteID) {
-# It must be defined one way or the other
+if ( !$SiteID ) {
+
+    # It must be defined one way or the other
     print STDERR "Error: Site name (GlueSiteUniqueID) not specified\n";
     exit 3;
 }
@@ -151,24 +160,26 @@ $ENV{"GLITE_INFO_SERVICE_SITE_ID"} = $SiteID;
 
 $command = $config{init};
 my @init_result = `$command`;
-my $init_rc = $? >> 8;
-if ( $init_rc ){
+my $init_rc     = $? >> 8;
+if ($init_rc) {
     print STDERR "Error: init command $command failed\n";
     print STDERR "@init_result\n";
     exit $init_rc;
 }
 
 foreach (@init_result) {
-# Should be key=value pairs
-    if ( m/=/ ){
+
+    # Should be key=value pairs
+    if (m/=/) {
         m/^(.*?)=\s*(.*)\s*$/;
-# Split on the first =, no leading or trailing whitespace in the value
-        my $key=$1;
-        my $value=$2;
-        $key=~s/\s+//g;
-	if ($key) {
-	    $ENV{$key} = $value;
-	}
+
+        # Split on the first =, no leading or trailing whitespace in the value
+        my $key   = $1;
+        my $value = $2;
+        $key =~ s/\s+//g;
+        if ($key) {
+            $ENV{$key} = $value;
+        }
     }
 }
 
@@ -179,7 +190,7 @@ $command = $config{get_endpoint};
 my $Endpoint = `$command`;
 
 $command = $config{get_status};
-my $Info = `$command`;
+my $Info   = `$command`;
 my $Status = $? >> 8;
 
 $command = $config{get_starttime};
@@ -209,25 +220,28 @@ my $Type = $config{service_type};
 # used hostname_vo_type; the YAIM scheme is something like hostname:port.
 # Neither is sufficient, e.g. Type SRM may have two endpoints on the same
 # port for SRM v1 and SRM v2. However the endpoint is also not necessarily
-# enough (it's not obvious that all published services have endpoints). 
+# enough (it's not obvious that all published services have endpoints).
 # Also there is a need to watch out for invalid characters as
 # the UniqueID is used to form the DN. The solution chosen is to append a
 # checksum of the config file by default. However, there may be a need to
 # preserve a persistent UniqueID in some cases, hence the entire UniqueID
 # can be passed as an optional third argument.
 
-if ($ARGV[2]) {
+if ( $ARGV[2] ) {
     $UID = $ARGV[2];
-} else {
-    if (!$host) {
-# If we can't get a local hostname at all we can't construct a unique ID
-	print STDERR "Error: hostname -f returned a null string\n";
-	exit 99;
+}
+else {
+    if ( !$host ) {
+
+        # If we can't get a local hostname at all we can't construct a unique ID
+        print STDERR "Error: hostname -f returned a null string\n";
+        exit 99;
     }
     my $check = `cksum $confile | cut -d\" \" -f 1`;
     chomp($check);
-# Note that this may cause trouble if hostname -f does not return an fqdn,
-# but I think that is normally required by other things anyway 
+
+    # Note that this may cause trouble if hostname -f does not return an fqdn,
+    # but I think that is normally required by other things anyway
     $UID = $host . "_" . $Type . "_" . $check;
 }
 
@@ -270,14 +284,17 @@ $Version =~ s/\s+//g;
 my $minor;
 my $patch;
 my $bad;
-(undef, $minor, $patch, $bad) = split /\./, $Version;
-if ( defined($bad) || (length($Version) > 16) || (length($Version) == 0) ) {
+( undef, $minor, $patch, $bad ) = split /\./, $Version;
+if ( defined($bad) || ( length($Version) > 16 ) || ( length($Version) == 0 ) ) {
     print "GlueServiceVersion: 4.4.4.4\n";
-} elsif ( ! defined($minor) ) {
+}
+elsif ( !defined($minor) ) {
     print "GlueServiceVersion: $Version.0.0\n";
-} elsif ( ! defined($patch) ) {
+}
+elsif ( !defined($patch) ) {
     print "GlueServiceVersion: $Version.0\n";
-} else {
+}
+else {
     print "GlueServiceVersion: $Version\n";
 }
 
@@ -288,8 +305,8 @@ if ( defined($bad) || (length($Version) > 16) || (length($Version) == 0) ) {
 $Endpoint =~ s/\s+//g;
 
 # Sanity check on the length
-if (length($Endpoint) > 240) {
-    $Endpoint = substr($Endpoint, 0, 239) . "4444";
+if ( length($Endpoint) > 240 ) {
+    $Endpoint = substr( $Endpoint, 0, 239 ) . "4444";
 }
 
 if ($Endpoint) {
@@ -300,11 +317,11 @@ if ($Endpoint) {
 # 0 = OK, 1 = Critical, 2 = Warning, 3 = Unknown, other = Other
 
 my $Statcode;
-if    ($Status == 0) { $Statcode = "OK" }
-elsif ($Status == 1) { $Statcode = "Critical" }
-elsif ($Status == 2) { $Statcode = "Warning" }
-elsif ($Status == 3) { $Statcode = "Unknown" }
-else                 { $Statcode = "Other" } 
+if    ( $Status == 0 ) { $Statcode = "OK" }
+elsif ( $Status == 1 ) { $Statcode = "Critical" }
+elsif ( $Status == 2 ) { $Statcode = "Warning" }
+elsif ( $Status == 3 ) { $Statcode = "Unknown" }
+else                   { $Statcode = "Other" }
 
 print "GlueServiceStatus: $Statcode\n";
 
@@ -332,12 +349,12 @@ $Info =~ tr/\0-\x7f/?/c;
 $Info =~ s/\(pid\s.*?\)\s*//ig;
 
 # Truncate if necessary
-if (length($Info) > 240) {
-    $Info = substr($Info, 0, 239) . " ...";
+if ( length($Info) > 240 ) {
+    $Info = substr( $Info, 0, 239 ) . " ...";
 }
 
 # Too short
-if (length($Info) < 2) {
+if ( length($Info) < 2 ) {
     $Info = "??";
 }
 
@@ -350,13 +367,13 @@ print "GlueServiceStatusInfo: $Info\n";
 
 my $WSDL = $config{WSDL_URL};
 $WSDL =~ s/\s+//g;
-if ($WSDL =~ m/^http/) {
+if ( $WSDL =~ m/^http/ ) {
     print "GlueServiceWSDL: $WSDL\n";
 }
 
 my $Semantics = $config{semantics_URL};
 $Semantics =~ s/\s+//g;
-if ($Semantics =~ m/^http/) {
+if ( $Semantics =~ m/^http/ ) {
     print "GlueServiceSemantics: $Semantics\n";
 }
 
@@ -369,15 +386,15 @@ if ($Semantics =~ m/^http/) {
 # No white space, should just be a number
 # The error indicator here is the Unix epoch
 $ST =~ s/\s+//g;
-if ( !($ST =~ m/^\d+$/) ) {
+if ( !( $ST =~ m/^\d+$/ ) ) {
     $ST = 0;
 }
 
 # We need to munge the timezone indicator to add a colon between
 # the hours and minutes
-my $tz = strftime("%z", localtime($ST));
+my $tz = strftime( "%z", localtime($ST) );
 $tz =~ s/(\d{2})(\d{2})/$1:$2/;
-my $StartTime = strftime("%Y-%m-%dT%H:%M:%S", localtime($ST)) . $tz;
+my $StartTime = strftime( "%Y-%m-%dT%H:%M:%S", localtime($ST) ) . $tz;
 
 # No error checks as strftime should return something reasonable
 print "GlueServiceStartTime: $StartTime\n";
@@ -391,11 +408,11 @@ print "GlueServiceStartTime: $StartTime\n";
 foreach (@Owner) {
     s/^\s+//;
     s/\s+$//;
-    if (length > 50) {
-	$_ = substr($_, 0, 45) . "4444";
+    if ( length > 50 ) {
+        $_ = substr( $_, 0, 45 ) . "4444";
     }
     if ($_) {
-	print "GlueServiceOwner: $_\n";
+        print "GlueServiceOwner: $_\n";
     }
 }
 
@@ -408,11 +425,11 @@ foreach (@Owner) {
 foreach (@ACBR) {
     s/^\s+//;
     s/\s+$//;
-    if (length > 240) {
-        $_ = substr($_, 0, 239) . "4444";
+    if ( length > 240 ) {
+        $_ = substr( $_, 0, 239 ) . "4444";
     }
     if ($_) {
-	print "GlueServiceAccessControlBaseRule: $_\n";
+        print "GlueServiceAccessControlBaseRule: $_\n";
     }
 }
 
@@ -422,11 +439,11 @@ foreach (@ACBR) {
 foreach (@ACBR) {
     s/^\s+//;
     s/\s+$//;
-    if (length > 240) {
-        $_ = substr($_, 0, 239) . "4444";
+    if ( length > 240 ) {
+        $_ = substr( $_, 0, 239 ) . "4444";
     }
     if (m/^VO:/) {
-	s/^VO://;
+        s/^VO://;
         print "GlueServiceAccessControlRule: $_\n";
     }
 }
@@ -439,8 +456,8 @@ foreach (@ACBR) {
 
 foreach (@RelatedServices) {
     s/\s+//g;
-    if (length > 240) {
-        $_ = substr($_, 0, 239) . "4444";
+    if ( length > 240 ) {
+        $_ = substr( $_, 0, 239 ) . "4444";
     }
     if ($_) {
         print "GlueForeignKey: GlueServiceUniqueID=$_\n";
@@ -469,43 +486,50 @@ $items{"glite-info-service_version"} = $gis_version;
 $items{"glite-info-service_hostname"} = $host;
 
 foreach (@ServiceData) {
-# Should be key=value pairs
-    if ( m/=/ ){
-	m/^(.*?)=\s*(.*)\s*$/;
-# Split on the first =, no leading or trailing whitespace in the value
-	my $key=$1;
-	my $value=$2;
-	$key=~s/\s+//g;
-# Just in case, zap any non-ASCII characters
-	$value =~ tr/\0-\x7f/?/c;
-# R-GMA has varchar(100)
-# R-GMA is no longer relevant!
-	if (length($key) > 240) {
-	    $key = substr($key, 0, 239) . "4444";
-	}
-        if (length($value) > 240) {
-            $value = substr($value, 0, 239) . "4444";
+
+    # Should be key=value pairs
+    if (m/=/) {
+        m/^(.*?)=\s*(.*)\s*$/;
+
+        # Split on the first =, no leading or trailing whitespace in the value
+        my $key   = $1;
+        my $value = $2;
+        $key =~ s/\s+//g;
+
+        # Just in case, zap any non-ASCII characters
+        $value =~ tr/\0-\x7f/?/c;
+
+        # R-GMA has varchar(100)
+        # R-GMA is no longer relevant!
+        if ( length($key) > 240 ) {
+            $key = substr( $key, 0, 239 ) . "4444";
         }
-# Don't output anything if the key is null
-        if (length($key) > 0) {
-	    $items{$key} = $value;
-	}else{
-	    print STDERR "ServiceDataKey has 0 length, value is: " . $value . "\n";
-	}
+        if ( length($value) > 240 ) {
+            $value = substr( $value, 0, 239 ) . "4444";
+        }
+
+        # Don't output anything if the key is null
+        if ( length($key) > 0 ) {
+            $items{$key} = $value;
+        }
+        else {
+            print STDERR "ServiceDataKey has 0 length, value is: " . $value
+              . "\n";
+        }
     }
 }
 
 # Now print the objects - the order is random but it doesn't matter
 
-while ( my ($key, $value) = each(%items) ) {
+while ( my ( $key, $value ) = each(%items) ) {
     print "dn: GlueServiceDataKey=$key,GlueServiceUniqueID=$UID,$bind_dn\n";
     print "objectClass: GlueTop\n";
     print "objectClass: GlueServiceData\n";
     print "objectClass: GlueKey\n";
     print "objectClass: GlueSchemaVersion\n";
     print "GlueServiceDataKey: $key\n";
-    if (length($value) > 0) {
-	print "GlueServiceDataValue: $value\n";
+    if ( length($value) > 0 ) {
+        print "GlueServiceDataValue: $value\n";
     }
     print "GlueChunkKey: GlueServiceUniqueID=$UID\n";
     print "GlueSchemaVersionMajor: 1\n";

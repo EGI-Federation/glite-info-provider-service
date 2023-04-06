@@ -1,6 +1,5 @@
 #!/usr/bin/perl -w
 
-#
 # glite-info-glue2-voms: a VOMS-specific GLUE 2 information provider.
 # This produces a single Service object for a VOMS server, with one
 # Endpoint per VO for each of voms and voms-admin (if configured).
@@ -45,13 +44,14 @@
 use strict;
 
 # Location of the VOMS config files
-my $vomsdir = "/etc/voms";
+my $vomsdir      = "/etc/voms";
 my $vomsadmindir = "/etc/voms-admin";
 
 # Two arguments are mandatory
 
-if (! $ARGV[1]) {
-    print STDERR "Usage: glite-info-glue2-voms <voms-config-file>[,<voms-admin-config-file>] <site-ID> [<service-ID>]\n";
+if ( !$ARGV[1] ) {
+    print STDERR
+"Usage: glite-info-glue2-voms <voms-config-file>[,<voms-admin-config-file>] <site-ID> [<service-ID>]\n";
     exit 1;
 }
 
@@ -67,14 +67,15 @@ my $vomsconf = shift @ConfigFiles;
 my $vomsadminconf = shift @ConfigFiles;
 
 # Simple check on the files
-if (!(-r $vomsconf)) {
+if ( !( -r $vomsconf ) ) {
     print STDERR "Error: Configuration file $vomsconf is not readable\n";
     exit 2;
 }
 if ($vomsadminconf) {
-    if (!(-r $vomsadminconf)) {
-	print STDERR "Error: Configuration file $vomsadminconf is not readable\n";
-	exit 3;
+    if ( !( -r $vomsadminconf ) ) {
+        print STDERR
+          "Error: Configuration file $vomsadminconf is not readable\n";
+        exit 3;
     }
 }
 
@@ -88,28 +89,32 @@ my $SID = $ARGV[2];
 $DID =~ s/\s+//g;
 $SID =~ s/\s+//g if ($SID);
 
-if (!$DID) {
-# No default possible
+if ( !$DID ) {
+
+    # No default possible
     print STDERR "Error: Site name (DomainID) not specified\n";
     exit 4;
 }
 
-if (!$SID) {
-# We construct a default, made from the host name, type and
-# a checksum of the voms config file (the latter not really needed
-# since we can't have more than one VOMS server per node, but we may
-# as well be consistent).
+if ( !$SID ) {
+
+    # We construct a default, made from the host name, type and
+    # a checksum of the voms config file (the latter not really needed
+    # since we can't have more than one VOMS server per node, but we may
+    # as well be consistent).
     my $host = `hostname -f`;
     chomp($host);
-    if (!$host) {
-# If we can't get a local hostname at all we can't construct a unique ID
+    if ( !$host ) {
+
+        # If we can't get a local hostname at all we can't construct a unique ID
         print STDERR "Error: hostname -f returned a null string\n";
         exit 99;
     }
     my $check = `cksum $vomsconf | cut -d\" \" -f 1`;
     chomp($check);
-# Note that this may cause trouble if hostname -f does not return an fqdn,
-# but I think that is normally required by other things anyway 
+
+    # Note that this may cause trouble if hostname -f does not return an fqdn,
+    # but I think that is normally required by other things anyway
     $SID = $host . "_VOMS_" . $check;
 }
 
@@ -142,14 +147,18 @@ my $Complexity = 0;
 
 foreach (@volist) {
     chomp;
-# Check that there is a config file for the VO
+
+    # Check that there is a config file for the VO
     if ( -e "$vomsdir/$_/voms.conf" ) {
-	$Complexity = 1;
-# Set a variable to transmit the VO name to the provider scripts
-	$ENV{"GLITE_INFO_SERVICE_VO"} = $_;
-# Run the Endpoint info provider, catching the LDIF in a list, with the VO
-# name appended to the EndpointID
-	push @endpoint_ldif, `glite-info-glue2-endpoint $vomsconf $SID ${VEID}_$_`;
+        $Complexity = 1;
+
+        # Set a variable to transmit the VO name to the provider scripts
+        $ENV{"GLITE_INFO_SERVICE_VO"} = $_;
+
+      # Run the Endpoint info provider, catching the LDIF in a list, with the VO
+      # name appended to the EndpointID
+        push @endpoint_ldif,
+          `glite-info-glue2-endpoint $vomsconf $SID ${VEID}_$_`;
     }
 }
 
@@ -157,13 +166,15 @@ foreach (@volist) {
 
 if ($vomsadminconf) {
     foreach (@volist) {
-    chomp;
-# Check that there is a config file and voms-admin directory for the VO
-	if ( -e "$vomsdir/$_/voms.conf" && -d "$vomsadmindir/$_") {
-	    $Complexity = 2;
-	    $ENV{"GLITE_INFO_SERVICE_VO"} = $_;
-	    push @endpoint_ldif, `glite-info-glue2-endpoint $vomsadminconf $SID ${VAEID}_$_`;
-	}
+        chomp;
+
+        # Check that there is a config file and voms-admin directory for the VO
+        if ( -e "$vomsdir/$_/voms.conf" && -d "$vomsadmindir/$_" ) {
+            $Complexity = 2;
+            $ENV{"GLITE_INFO_SERVICE_VO"} = $_;
+            push @endpoint_ldif,
+              `glite-info-glue2-endpoint $vomsadminconf $SID ${VAEID}_$_`;
+        }
     }
 }
 
@@ -174,39 +185,45 @@ my $Attr;
 
 my $QL;
 my $QLnum;
-my $QLmax = 0;
+my $QLmax        = 0;
 my $QualityLevel = "UNDEFINEDVALUE";
 
 my %QLmap = (
-        "development" => 1,
-        "testing" => 2,
-        "pre-production" => 3,
-        "production" => 4
-	     );
+    "development"    => 1,
+    "testing"        => 2,
+    "pre-production" => 3,
+    "production"     => 4
+);
 
 my $Cap;
 my $Capabilities = "";
 
 foreach (@endpoint_ldif) {
-# Read through the LDIF and look for the relevant attributes
-    if ( m/^GLUE2EndpointQualityLevel:/ ) {
-        ($Attr, $QL) = split /:/, $_, 2;
+
+    # Read through the LDIF and look for the relevant attributes
+    if (m/^GLUE2EndpointQualityLevel:/) {
+        ( $Attr, $QL ) = split /:/, $_, 2;
         $QL =~ s/\s+//g;
-# Convert the textual QL to a number
-	$QLnum = $QLmap{$QL};
-# The Service QualityLevel is the best QL of any Endpoint
-	if ( $QLnum > $QLmax ){
-	    $QLmax = $QLnum;
-	    $QualityLevel = $QL;
-	}
-    } elsif ( m/^GLUE2EndpointCapability:/ ) {
-	($Attr, $Cap) = split /:/, $_, 2;
-	$Cap =~ s/\s+//g;
-# The Service accumulates all the (distinct) Capabilities of its Endpoints
-	if ( !($Capabilities =~ m/,$Cap/) ) {
-# Make a comma-separated list (with a leading comma)
-	    $Capabilities = $Capabilities . "," . $Cap;
-	}
+
+        # Convert the textual QL to a number
+        $QLnum = $QLmap{$QL};
+
+        # The Service QualityLevel is the best QL of any Endpoint
+        if ( $QLnum > $QLmax ) {
+            $QLmax        = $QLnum;
+            $QualityLevel = $QL;
+        }
+    }
+    elsif (m/^GLUE2EndpointCapability:/) {
+        ( $Attr, $Cap ) = split /:/, $_, 2;
+        $Cap =~ s/\s+//g;
+
+      # The Service accumulates all the (distinct) Capabilities of its Endpoints
+        if ( !( $Capabilities =~ m/,$Cap/ ) ) {
+
+            # Make a comma-separated list (with a leading comma)
+            $Capabilities = $Capabilities . "," . $Cap;
+        }
     }
 }
 
