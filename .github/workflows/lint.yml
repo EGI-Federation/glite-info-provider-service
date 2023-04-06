@@ -36,4 +36,4 @@ jobs:
           # Ignore errors due to:
           # - non constant source (SC1090)
           # - No such file or directory (SC1091)
-          SHELLCHECK_OPTS: -e SC1090 SC1091
+          SHELLCHECK_OPTS: -e SC1090,SC1091
