@@ -33,5 +33,7 @@ jobs:
           DISABLE_ERRORS: false
           # XXX: Not working, see https://github.com/github/super-linter/issues/3552
           VALIDATE_GITLEAKS: false
-          # Ignore errors due to non constant source (SC1090)
-          SHELLCHECK_OPTS: -e SC1090
+          # Ignore errors due to:
+          # - non constant source (SC1090)
+          # - No such file or directory (SC1091)
+          SHELLCHECK_OPTS: -e SC1090 SC1091
