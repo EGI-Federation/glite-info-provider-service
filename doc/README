@@ -196,14 +196,6 @@ LDAP protocol version 3. It might also be useful to publish the Glue schema
 version as ServiceData, but this has not so far been implemented as there
 doesn't seem to be an especially easy way to do it.
 
-gridice:
-
-The version number is for the gridice-sensor RPM.
-
-The default hostname and port can be overridden with the GRIDICE_HOST
-and GRIDICE_PORT variables if necessary. There seems to be no config
-file per se, and the location of the PID file is hardwired.
-
 gsirfio:
 
 This is just a barebones implementation, it's not clear if we will want to
@@ -232,19 +224,6 @@ GlueServiceAccessControlBaseRule: MYPROXY:trusted_retrievers=/DC=ch/DC=cern/OU=c
 There is no pid file, but there is a lock file so the creation time
 is used for the service start time.
 
-Gatekeeper:
-
-This is for the EDG/Globus GT2 gatekeeper on the LCG CE. The version is set
-to 2.0.0, which seems to be the protocol version for the GT2 GRAM.
-
-As usual the hostname and port can be overridden if necessary by setting the
-GATEKEEPER_PORT and GATEKEEPER_HOST environment variables.
-
-The start time is taken from the timestamp on the relevant /proc directory.
-
-A comma-separated list of the supported jobmanagers is output as a ServiceData
-object with Key=Services. The host DN is also output with Key=DN.
-
 CREAM/CEMon:
 
 These two services both run under tomcat, so the configuration is very similar
@@ -261,25 +240,6 @@ unlikely to change.
 
 Possibly CREAM and CEMon should be connected as related services, but this
 isn't implemented for now.
-
-WMProxy:
-
-The version is taken from the server RPM, although it's not entirely clear
-if this gives the desired result (the interface version).
-
-The hostname and port can be overridden as usual if necessary, but these
-are read from a config file so this should not normally be needed.
-
-The DN of the host certificate is put into a ServiceData object with key "DN"
-to enable matching against the authorised renewer list published by a myproxy.
-
-LBServer:
-
-There is apparently no config file. If necessary the default host and port
-can be overridden with the LBSERVER_PORT and LBSERVER_HOST variables.
-
-The version is taken from the server RPM, although it's not entirely clear
-if this gives the desired result (the interface version).
 
 VOMS:
 

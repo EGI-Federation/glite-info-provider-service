@@ -42,21 +42,17 @@ rm -rf %{buildroot}
 %{_bindir}/glite-info-service-amga
 %{_bindir}/glite-info-service-argus
 %{_bindir}/glite-info-service-bdii
-%{_bindir}/glite-info-service-gridice
 %{_bindir}/glite-info-service-vobox
 %{_bindir}/glite-info-service-voms
 %{_bindir}/glite-info-service-voms-wrapper
 %{_bindir}/glite-info-service-voms-admin
 %{_bindir}/glite-info-service-myproxy
-%{_bindir}/glite-info-service-wmproxy
-%{_bindir}/glite-info-service-lbserver
 %{_bindir}/glite-info-service-frontier
 %{_bindir}/glite-info-service-squid
 %{_bindir}/glite-info-service-cream
 %{_bindir}/glite-info-service-dcache
 %{_bindir}/glite-info-service-dpm
 %{_bindir}/glite-info-service-rtepublisher
-%{_bindir}/glite-info-service-gatekeeper
 %{_bindir}/glite-info-service-status
 %{_sysconfdir}/glite/info/service/glite-info-glue2-amga.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-glue2-argus-pap.conf.template
@@ -64,7 +60,6 @@ rm -rf %{buildroot}
 %{_sysconfdir}/glite/info/service/glite-info-glue2-argus-pdp.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-glue2-bdii-site.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-glue2-bdii-top.conf.template
-%{_sysconfdir}/glite/info/service/glite-info-glue2-lbserver.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-glue2-rtepublisher.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-glue2-vobox.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-glue2-voms.conf.template
@@ -73,7 +68,6 @@ rm -rf %{buildroot}
 %{_sysconfdir}/glite/info/service/glite-info-glue2-squid.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-glue2-myproxy.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-glue2-cemon.conf.template
-%{_sysconfdir}/glite/info/service/glite-info-glue2-wmproxy.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-service-test.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-service-amga.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-service-argus-pap.conf.template
@@ -82,9 +76,7 @@ rm -rf %{buildroot}
 %{_sysconfdir}/glite/info/service/glite-info-service-bdii.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-service-bdii-site.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-service-bdii-top.conf.template
-%{_sysconfdir}/glite/info/service/glite-info-service-gridice.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-service-gsirfio.conf.template
-%{_sysconfdir}/glite/info/service/glite-info-service-lbserver.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-service-frontier.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-service-squid.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-service-cream.conf.template
@@ -97,9 +89,7 @@ rm -rf %{buildroot}
 %{_sysconfdir}/glite/info/service/glite-info-service-srm-dcache-v2.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-service-srm-dpm-v1.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-service-srm-dpm-v2.conf.template
-%{_sysconfdir}/glite/info/service/glite-info-service-wmproxy.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-service-rtepublisher.conf.template
-%{_sysconfdir}/glite/info/service/glite-info-service-gatekeeper.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-glue2-test.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-glue2-test2.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-glue2-service-test.conf.template
