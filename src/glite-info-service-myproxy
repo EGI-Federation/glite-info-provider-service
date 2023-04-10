@@ -27,10 +27,10 @@ init)
 
 status)
 
-	stat1=$(test -f /var/lock/subsys/myproxy-server)
+	test -f /var/lock/subsys/myproxy-server > /dev/null
 	rc1=$?
 
-	stat2=$(netstat -an --inet --inet6 | grep "^tcp .* \(::\|0.0.0.0\):${MYPROXY_PORT:-7512} .*LISTEN")
+	netstat -an --inet --inet6 | grep -s "^tcp .* \(::\|0.0.0.0\):${MYPROXY_PORT:-7512} .*LISTEN"
 	rc2=$?
 
 	echo -n "The MyProxy server is "

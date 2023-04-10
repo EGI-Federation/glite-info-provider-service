@@ -18,7 +18,7 @@ shift
 export LANG=C
 
 # Collect the stdout and return code from service status
-string=$(/sbin/service "$service" status $@)
+string=$(/sbin/service "$service" status "$@")
 rc=$?
 
 # Strip out the standard representation of pids

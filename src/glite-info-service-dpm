@@ -41,19 +41,19 @@ init)
 	;;
 
 status)
-	stat1=$(/sbin/service dpm status)
+	/sbin/service dpm status > /dev/null
 	rc1=$?
 
-	stat2=$(/sbin/service dpnsdaemon status)
+	/sbin/service dpnsdaemon status > /dev/null
 	rc2=$?
 
 	case "$2" in
 	v1)
-		stat3=$(/sbin/service srmv1 status)
+		/sbin/service srmv1 status > /dev/null
 		rc3=$?
 		;;
 	v2)
-		stat3=$(/sbin/service srmv2.2 status)
+		/sbin/service srmv2.2 status > /dev/null
 		rc3=$?
 		;;
 	*)

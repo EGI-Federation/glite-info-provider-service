@@ -4,4 +4,4 @@
 # and replaced by this script which calls the plug-compatible
 # glite-info-glue2-simple provider.
 
-glite-info-glue2-simple $@
+glite-info-glue2-simple "$@"

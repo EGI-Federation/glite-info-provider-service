@@ -52,6 +52,8 @@ subclusters)
 	# The expression below should list them in a form which will create
 	# one ServiceData entry per directory with a Key of the form
 	# GlueSubClusterUniqueID:<directory> and no Value.
+	# This ls is specially crafted to handle spaces, so disabling SC2010
+	# shellcheck disable=SC2010
 	ls -pQ "$RTEPUBLISHER_PATH" | grep /$ | cut -d\" -f2 | sed s/^/GlueSubClusterUniqueID:/ | sed s/$/=/
 
 	exit $?
@@ -62,6 +64,8 @@ executionenvironments)
 	# assumed that the ID (GLUE2ResourceID) is the same as the SubCluster ID.
 	# Also in GLUE 2 we can have multiple Extension objects with the same
 	# Key, so we can publish them more sensibly.
+	# This ls is specially crafted to handle spaces, so disabling SC2010
+	# shellcheck disable=SC2010
 	ls -pQ "$RTEPUBLISHER_PATH" | grep /$ | cut -d\" -f2 | sed s/^/GLUE2ResourceID=/
 
 	exit $?
@@ -70,6 +74,8 @@ executionenvironments)
 vos)
 	# VO names are the names of directories one level below the subcluster
 	# directories. The expression below should list all the VO names.
+	# This ls is specially crafted to handle spaces, so disabling SC2010
+	# shellcheck disable=SC2010
 	ls -pQ "$RTEPUBLISHER_PATH"/* | grep /$ | cut -d\" -f2 | sort | uniq
 
 	exit $?
