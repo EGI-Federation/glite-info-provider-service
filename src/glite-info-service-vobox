@@ -26,6 +26,8 @@ init)
 		. "${GLOBUS_LOCATION}/libexec/globus-script-initializer"
 	fi
 
+	# this code is probably buggy
+	# shellcheck disable=SC2154
 	VOBOX_PID_FILE=${localstatedir}/sshd.pid
 
 	# Write to stdout - will be imported by the info provider
