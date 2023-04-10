@@ -27,7 +27,7 @@ init)
 
 status)
 
-	test -f /var/lock/subsys/myproxy-server > /dev/null
+	test -f /var/lock/subsys/myproxy-server
 	rc1=$?
 
 	netstat -an --inet --inet6 | grep -s "^tcp .* \(::\|0.0.0.0\):${MYPROXY_PORT:-7512} .*LISTEN"

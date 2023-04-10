@@ -22,7 +22,7 @@ string=$(/sbin/service "$service" status "$@")
 rc=$?
 
 # Strip out the standard representation of pids
-echo "$string" | sed 's/(pid .*) //'
+echo "${string/(pid *) /}"
 
 if [ $rc -eq 0 ]; then
 	exit 0
