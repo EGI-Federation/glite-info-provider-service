@@ -1,10 +1,10 @@
 Name:          glite-info-provider-service
-Version:       1.13.4
+Version:       1.14.0
 Release:       1%{?dist}
 Summary:       The GLUE service information provider
 Group:         Development/Libraries
 License:       ASL 2.0
-URL:           https://github.com/EGI-Federation/glite-info-provider-ldap
+URL:           https://github.com/EGI-Federation/glite-info-provider-service
 Source:        %{name}-%{version}.tar.gz
 BuildArch:     noarch
 BuildRoot:     %{_tmppath}/%{name}-%{version}-build
@@ -29,7 +29,7 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-%dir ${_sysconfdir}/glite/info/service
+%dir %{_sysconfdir}/glite/info/service
 %{_bindir}/glite-info-glue2-service
 %{_bindir}/glite-info-glue2-endpoint
 %{_bindir}/glite-info-glue2-simple
@@ -42,21 +42,17 @@ rm -rf %{buildroot}
 %{_bindir}/glite-info-service-amga
 %{_bindir}/glite-info-service-argus
 %{_bindir}/glite-info-service-bdii
-%{_bindir}/glite-info-service-gridice
 %{_bindir}/glite-info-service-vobox
 %{_bindir}/glite-info-service-voms
 %{_bindir}/glite-info-service-voms-wrapper
 %{_bindir}/glite-info-service-voms-admin
 %{_bindir}/glite-info-service-myproxy
-%{_bindir}/glite-info-service-wmproxy
-%{_bindir}/glite-info-service-lbserver
 %{_bindir}/glite-info-service-frontier
 %{_bindir}/glite-info-service-squid
 %{_bindir}/glite-info-service-cream
 %{_bindir}/glite-info-service-dcache
 %{_bindir}/glite-info-service-dpm
 %{_bindir}/glite-info-service-rtepublisher
-%{_bindir}/glite-info-service-gatekeeper
 %{_bindir}/glite-info-service-status
 %{_sysconfdir}/glite/info/service/glite-info-glue2-amga.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-glue2-argus-pap.conf.template
@@ -64,7 +60,6 @@ rm -rf %{buildroot}
 %{_sysconfdir}/glite/info/service/glite-info-glue2-argus-pdp.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-glue2-bdii-site.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-glue2-bdii-top.conf.template
-%{_sysconfdir}/glite/info/service/glite-info-glue2-lbserver.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-glue2-rtepublisher.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-glue2-vobox.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-glue2-voms.conf.template
@@ -73,7 +68,6 @@ rm -rf %{buildroot}
 %{_sysconfdir}/glite/info/service/glite-info-glue2-squid.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-glue2-myproxy.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-glue2-cemon.conf.template
-%{_sysconfdir}/glite/info/service/glite-info-glue2-wmproxy.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-service-test.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-service-amga.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-service-argus-pap.conf.template
@@ -82,9 +76,7 @@ rm -rf %{buildroot}
 %{_sysconfdir}/glite/info/service/glite-info-service-bdii.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-service-bdii-site.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-service-bdii-top.conf.template
-%{_sysconfdir}/glite/info/service/glite-info-service-gridice.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-service-gsirfio.conf.template
-%{_sysconfdir}/glite/info/service/glite-info-service-lbserver.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-service-frontier.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-service-squid.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-service-cream.conf.template
@@ -97,9 +89,7 @@ rm -rf %{buildroot}
 %{_sysconfdir}/glite/info/service/glite-info-service-srm-dcache-v2.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-service-srm-dpm-v1.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-service-srm-dpm-v2.conf.template
-%{_sysconfdir}/glite/info/service/glite-info-service-wmproxy.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-service-rtepublisher.conf.template
-%{_sysconfdir}/glite/info/service/glite-info-service-gatekeeper.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-glue2-test.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-glue2-test2.conf.template
 %{_sysconfdir}/glite/info/service/glite-info-glue2-service-test.conf.template
@@ -113,15 +103,21 @@ rm -rf %{buildroot}
 %doc %{_docdir}/%{name}-%{version}/README
 %doc %{_docdir}/%{name}-%{version}/README-GLUE2
 %doc %{_docdir}/%{name}-%{version}/AUTHORS.md
-%license ${_datadir}/licenses/%{name}-%{version}/COPYRIGHT
-%license ${_datadir}/licenses/%{name}-%{version}/LICENSE.txt
+%license %{_datadir}/licenses/%{name}-%{version}/COPYRIGHT
+%license %{_datadir}/licenses/%{name}-%{version}/LICENSE.txt
 
 %changelog
+* Tue Apr 11 2023 Baptiste Grenier <baptiste.grenier@egi.eu> - 1.14.0-1
+- Drop some deprecated providers (gatekeeper, gridice, lbserver, wmproxy). (#3) (Baptiste Grenier)
+- Lint code. (#3) (Enol Fernandez) (Baptiste Grenier)
+- Add Community files and GitHub actions. (#2) (Baptiste Grenier)
+- Build and release using CentOS 7, AlmaLinux 8 and 9. (#2) (Baptiste Grenier)
+
 * Mon Aug 04 2014 Stephen Burke <stephen.burke@stfc.ac.uk> - 1.13.4-1
 - Patch for the RTEPublisher start time, GGUS #107264
 - Publish the schema version as OtherInfo for the site and top BDII
 
-* Thu Apr 15 2014 Stephen Burke <stephen.burke@stfc.ac.uk> - 1.13.3-1
+* Tue Apr 15 2014 Stephen Burke <stephen.burke@stfc.ac.uk> - 1.13.3-1
 - Change the RPM name for the tag publisher version, bug #102207
 
 * Thu Aug 01 2013 Stephen Burke <stephen.burke@stfc.ac.uk> - 1.13.1-1

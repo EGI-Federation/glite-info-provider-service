@@ -53,61 +53,68 @@ my $validity = "3600";
 
 # The site name (GLUE2DomainID) should be the second argument
 
-if ($ARGV[1]){
+if ( $ARGV[1] ) {
     $SiteID = $ARGV[1];
-}else{
-    print STDERR "Usage: glite-info-service-glue2 <config-file> <site-ID> [<service-ID>]\n";
+}
+else {
+    print STDERR
+"Usage: glite-info-service-glue2 <config-file> <site-ID> [<service-ID>]\n";
     exit 1;
 }
 
 # Read in the configuration file (first argument)
 
 my %config = (
-        init => '',
-        service_type => '',
-        get_version => '',
-        get_endpoint => '',
-        get_status => '',
-        WSDL_URL => '',
-        semantics_URL => '',
-        get_starttime => '',
-        get_owner => '',
-        get_acbr => '',
-	get_data => '',
-        get_services => '',
-	      );
+    init          => '',
+    service_type  => '',
+    get_version   => '',
+    get_endpoint  => '',
+    get_status    => '',
+    WSDL_URL      => '',
+    semantics_URL => '',
+    get_starttime => '',
+    get_owner     => '',
+    get_acbr      => '',
+    get_data      => '',
+    get_services  => '',
+);
 
-if ($ARGV[0]){
+if ( $ARGV[0] ) {
     $confile = $ARGV[0];
-    my $fh = new FileHandle $confile
-        or die "Error: Can't open configuration file: $ARGV[0]\n";
-    foreach (<$fh>){
-        if ((! m/^\#/) & (m/=/)){
-# For lines containing an = and not starting with #
+    my $fh = FileHandle->new($confile)
+      or die "Error: Can't open configuration file: $ARGV[0]\n";
+    foreach (<$fh>) {
+        if ( ( !m/^\#/ ) & (m/=/) ) {
+
+            # For lines containing an = and not starting with #
             m/^(.*?)=\s*(.*)\s*$/;
-# Split on the first =, no leading or trailing whitespace in the value
-            my $key=$1;
-            my $value=$2;
-            $key=~s/\s+//g;
-            $config{$key}=$value;
+
+          # Split on the first =, no leading or trailing whitespace in the value
+            my $key   = $1;
+            my $value = $2;
+            $key =~ s/\s+//g;
+            $config{$key} = $value;
         }
     }
-}else{
-    print STDERR "Usage: glite-info-service-glue2 <config-file> <site-ID>  [<service-ID>]\n";
+}
+else {
+    print STDERR
+"Usage: glite-info-service-glue2 <config-file> <site-ID>  [<service-ID>]\n";
     exit 1;
 }
 
 # Check that all configuration items are set
 
 my $missing = 0;
-while ( my ($key, $value) = each(%config) ) {
-    if ( ! $config{$key} ){
+while ( my ( $key, $value ) = each(%config) ) {
+    if ( !$config{$key} ) {
         print STDERR "Error: configuration parameter $key not set\n";
         $missing += 1;
     }
 }
-if ( $missing ) {
-    print STDERR "Error: $missing configuration parameter(s) not set in file $confile\n";
+if ($missing) {
+    print STDERR
+      "Error: $missing configuration parameter(s) not set in file $confile\n";
     exit 2;
 }
 
@@ -128,24 +135,26 @@ $ENV{"GLITE_INFO_SERVICE_GLUE2_SITE_ID"} = $SiteID;
 
 $command = $config{init};
 my @init_result = `$command`;
-my $init_rc = $? >> 8;
-if ( $init_rc ){
+my $init_rc     = $? >> 8;
+if ($init_rc) {
     print STDERR "Error: init command $command failed\n";
     print STDERR "@init_result\n";
     exit $init_rc;
 }
 
 foreach (@init_result) {
-# Should be key=value pairs
-    if ( m/=/ ){
+
+    # Should be key=value pairs
+    if (m/=/) {
         m/^(.*?)=\s*(.*)\s*$/;
-# Split on the first =, no leading or trailing whitespace in the value
-        my $key=$1;
-        my $value=$2;
-        $key=~s/\s+//g;
-	if ($key) {
-	    $ENV{$key} = $value;
-	}
+
+        # Split on the first =, no leading or trailing whitespace in the value
+        my $key   = $1;
+        my $value = $2;
+        $key =~ s/\s+//g;
+        if ($key) {
+            $ENV{$key} = $value;
+        }
     }
 }
 
@@ -156,7 +165,7 @@ $command = $config{get_endpoint};
 my $Endpoint = `$command`;
 
 $command = $config{get_status};
-my $Info = `$command`;
+my $Info   = `$command`;
 my $Status = $? >> 8;
 
 $command = $config{get_starttime};
@@ -172,7 +181,7 @@ my @ACBR = `$command`;
 
 # OtherInfo is not yet supported
 $command = "echo";
-my @ServiceOtherInfo = `$command`;
+my @ServiceOtherInfo  = `$command`;
 my @EndpointOtherInfo = `$command`;
 
 # Capabilities are not yet supported
@@ -191,8 +200,8 @@ my @StatusInfo = "";
 # Implementor, ImplementationName and ImplementationVersion are not
 # yet supported
 
-my $Implementor = ""; 
-my $ImplementationName = "";
+my $Implementor           = "";
+my $ImplementationName    = "";
 my $ImplementationVersion = "";
 
 # Not clear if this should be configurable
@@ -217,13 +226,15 @@ my $Type = $config{service_type};
 # there may be a need to preserve a persistent ID in some cases,
 # hence the entire ID can be passed as an optional third argument.
 
-if ($ARGV[2]) {
+if ( $ARGV[2] ) {
     $UID = $ARGV[2];
-} else {
+}
+else {
     my $check = `cksum $confile | cut -d\" \" -f 1`;
     chomp($check);
-# Note that this may cause trouble if hostname -f does not return an fqdn,
-# but I think that is normally required by other things anyway 
+
+    # Note that this may cause trouble if hostname -f does not return an fqdn,
+    # but I think that is normally required by other things anyway
     $UID = $host . "_" . $Type . "_" . $check;
 }
 
@@ -247,7 +258,7 @@ print "GLUE2ServiceID: $UID\n";
 # Creation time and validity are standard attributes for all objects
 
 # Times are mandated to be UTC only
-my $TimeNow = strftime("%Y-%m-%dT%H:%M:%SZ", gmtime());
+my $TimeNow = strftime( "%Y-%m-%dT%H:%M:%SZ", gmtime() );
 print "GLUE2EntityCreationTime: $TimeNow\n";
 
 print "GLUE2EntityValidity: $validity\n";
@@ -263,11 +274,12 @@ print "GLUE2EntityName: $Name\n";
 # NB OtherInfo is not yet supported, but this would print it if defined above
 
 foreach (@ServiceOtherInfo) {
-# No leading or trailing spaces, and limit to a reasonable length
+
+    # No leading or trailing spaces, and limit to a reasonable length
     s/^\s+//;
     s/\s+$//;
-    if (length > 240) {
-        $_ = substr($_, 0, 239) . "4444";
+    if ( length > 240 ) {
+        $_ = substr( $_, 0, 239 ) . "4444";
     }
     if ($_) {
         print "GLUE2EntityOtherInfo: $_\n";
@@ -284,8 +296,9 @@ print "GLUE2EntityOtherInfo: InfoProviderHost=$host\n";
 # if defined above
 
 foreach (@Capabilities) {
-# Should be no need for validation as it will be fixed per service type,
-# but still strip leading and trailing spaces
+
+    # Should be no need for validation as it will be fixed per service type,
+    # but still strip leading and trailing spaces
     s/^\s+//;
     s/\s+$//;
     if ($_) {
@@ -306,10 +319,11 @@ print "GLUE2ServiceQualityLevel: $QualityLevel\n";
 # if defined above
 
 foreach (@StatusInfo) {
-# Strip all whitespace
+
+    # Strip all whitespace
     s/\s+//g;
     if (m/^http/) {
-	print "GlueServiceStatusInfo: $_\n";
+        print "GlueServiceStatusInfo: $_\n";
     }
 }
 
@@ -328,8 +342,8 @@ print "GLUE2ServiceAdminDomainForeignKey: $SiteID\n";
 
 foreach (@RelatedServices) {
     s/\s+//g;
-    if (length > 240) {
-        $_ = substr($_, 0, 239) . "4444";
+    if ( length > 240 ) {
+        $_ = substr( $_, 0, 239 ) . "4444";
     }
     if ($_) {
         print "GLUE2ServiceServiceForeignKey: $_\n";
@@ -370,11 +384,12 @@ print "GLUE2EntityName: $Name\n";
 # NB OtherInfo is not yet supported, but this would print it if defined above
 
 foreach (@EndpointOtherInfo) {
-# No leading or trailing spaces, and limit to a reasonable length
+
+    # No leading or trailing spaces, and limit to a reasonable length
     s/^\s+//;
     s/\s+$//;
-    if (length > 240) {
-        $_ = substr($_, 0, 239) . "4444";
+    if ( length > 240 ) {
+        $_ = substr( $_, 0, 239 ) . "4444";
     }
     if ($_) {
         print "GLUE2EntityOtherInfo: $_\n";
@@ -394,8 +409,8 @@ print "GLUE2EntityOtherInfo: InfoProviderHost=$host\n";
 $Endpoint =~ s/\s+//g;
 
 # Sanity check on the length
-if (length($Endpoint) > 240) {
-    $Endpoint = substr($Endpoint, 0, 239) . "4444";
+if ( length($Endpoint) > 240 ) {
+    $Endpoint = substr( $Endpoint, 0, 239 ) . "4444";
 }
 
 if ($Endpoint) {
@@ -406,8 +421,9 @@ if ($Endpoint) {
 # if defined above
 
 foreach (@Capabilities) {
-# Should be no need for validation as it will be fixed per service type,
-# but still strip leading and trailing spaces
+
+    # Should be no need for validation as it will be fixed per service type,
+    # but still strip leading and trailing spaces
     s/^\s+//;
     s/\s+$//;
     if ($_) {
@@ -439,14 +455,17 @@ $Version =~ s/\s+//g;
 my $minor;
 my $patch;
 my $bad;
-(undef, $minor, $patch, $bad) = split /\./, $Version;
-if ( defined($bad) || (length($Version) > 16) || (length($Version) == 0) ) {
+( undef, $minor, $patch, $bad ) = split /\./, $Version;
+if ( defined($bad) || ( length($Version) > 16 ) || ( length($Version) == 0 ) ) {
     print "GLUE2EndpointInterfaceVersion: 4.4.4.4\n";
-} elsif ( ! defined($minor) ) {
+}
+elsif ( !defined($minor) ) {
     print "GLUE2EndpointInterfaceVersion: $Version.0.0\n";
-} elsif ( ! defined($patch) ) {
+}
+elsif ( !defined($patch) ) {
     print "GLUE2EndpointInterfaceVersion: $Version.0\n";
-} else {
+}
+else {
     print "GLUE2EndpointInterfaceVersion: $Version\n";
 }
 
@@ -460,14 +479,14 @@ if ( defined($bad) || (length($Version) > 16) || (length($Version) == 0) ) {
 
 my $WSDL = $config{WSDL_URL};
 $WSDL =~ s/\s+//g;
-if ($WSDL =~ m/^http/) {
+if ( $WSDL =~ m/^http/ ) {
     print "GLUE2EndpointTechnology: webservice\n";
     print "GLUE2EndpointWSDL: $WSDL\n";
 }
 
 my $Semantics = $config{semantics_URL};
 $Semantics =~ s/\s+//g;
-if ($Semantics =~ m/^http/) {
+if ( $Semantics =~ m/^http/ ) {
     print "GLUE2EndpointSemantics: $Semantics\n";
 }
 
@@ -499,11 +518,11 @@ print "GLUE2EndpointQualityLevel: $QualityLevel\n";
 # 0 = OK, 1 = Critical, 2 = Warning, 3 = Unknown, other = Other
 
 my $Statcode;
-if    ($Status == 0) { $Statcode = "ok" }
-elsif ($Status == 1) { $Statcode = "critical" }
-elsif ($Status == 2) { $Statcode = "warning" }
-elsif ($Status == 3) { $Statcode = "unknown" }
-else                 { $Statcode = "other" } 
+if    ( $Status == 0 ) { $Statcode = "ok" }
+elsif ( $Status == 1 ) { $Statcode = "critical" }
+elsif ( $Status == 2 ) { $Statcode = "warning" }
+elsif ( $Status == 3 ) { $Statcode = "unknown" }
+else                   { $Statcode = "other" }
 
 print "GLUE2EndpointHealthState: $Statcode\n";
 
@@ -521,12 +540,12 @@ $Info =~ s/\n+/ /g;
 $Info =~ s/\p{IsC}.*$//;
 
 # Truncate if necessary
-if (length($Info) > 240) {
-    $Info = substr($Info, 0, 239) . " ...";
+if ( length($Info) > 240 ) {
+    $Info = substr( $Info, 0, 239 ) . " ...";
 }
 
 # Too short
-if (length($Info) < 2) {
+if ( length($Info) < 2 ) {
     $Info = "??";
 }
 
@@ -546,25 +565,26 @@ print "GLUE2EndpointServingState: $ServingState\n";
 # No white space, should just be a number
 # The error indicator here is the Unix epoch
 $ST =~ s/\s+//g;
-if ( !($ST =~ m/^\d+$/) ) {
+if ( !( $ST =~ m/^\d+$/ ) ) {
     $ST = 0;
 }
 
 # We need to munge the timezone indicator to add a colon between
 # the hours and minutes
-my $tz = strftime("%z", localtime($ST));
+my $tz = strftime( "%z", localtime($ST) );
 $tz =~ s/(\d{2})(\d{2})/$1:$2/;
-my $StartTime = strftime("%Y-%m-%dT%H:%M:%S", localtime($ST)) . $tz;
+my $StartTime = strftime( "%Y-%m-%dT%H:%M:%S", localtime($ST) ) . $tz;
 
 # No error checks as strftime should return something reasonable
 print "GLUE2EndpointStartTime: $StartTime\n";
 
 # This should give us the host cert issuer, if any
 
-my $Issuer = "";
+my $Issuer   = "";
 my $hostcert = "/etc/grid-security/hostcert.pem";
-if ( -e $hostcert) {
-#    $Issuer = `grid-cert-info -file $hostcert -issuer`;
+if ( -e $hostcert ) {
+
+    #    $Issuer = `grid-cert-info -file $hostcert -issuer`;
     $Issuer = `openssl x509 -issuer -noout -in $hostcert | sed 's/^[^/]*//'`;
 }
 
@@ -582,7 +602,8 @@ print "GLUE2EndpointTrustedCA: $TrustedCA\n";
 
 # Downtimes are handled by the GOC DB in EGEE, so not published here
 
-print "GLUE2EndpointDownTimeInfo: See the GOC DB for downtimes: https://goc.gridops.org/\n";
+print
+"GLUE2EndpointDownTimeInfo: See the GOC DB for downtimes: https://goc.gridops.org/\n";
 
 # Finally print the upward link to the parent Service
 
@@ -597,45 +618,54 @@ print "\n";
 my %items = ();
 
 foreach (@ServiceData) {
-# Should be key=value pairs
-    if ( m/=/ ){
+
+    # Should be key=value pairs
+    if (m/=/) {
         m/^(.*?)=\s*(.*)\s*$/;
-# Split on the first =, no leading or trailing whitespace in the value
-        my $key=$1;
-        my $value=$2;
-        $key=~s/\s+//g;
-# R-GMA has varchar(100)
-        if (length($key) > 99) {
-            $key = substr($key, 0, 94) . "4444";
+
+        # Split on the first =, no leading or trailing whitespace in the value
+        my $key   = $1;
+        my $value = $2;
+        $key =~ s/\s+//g;
+
+        # R-GMA has varchar(100)
+        if ( length($key) > 99 ) {
+            $key = substr( $key, 0, 94 ) . "4444";
         }
-        if (length($value) > 99) {
-            $value = substr($value, 0, 94) . "4444";
+        if ( length($value) > 99 ) {
+            $value = substr( $value, 0, 94 ) . "4444";
         }
-# Don't output anything if the key is null
-        if (length($key) > 0) {
+
+        # Don't output anything if the key is null
+        if ( length($key) > 0 ) {
             $items{$key} = $value;
-        }else{
-            print STDERR "Extension Key has 0 length, value is: " . $value . "\n";
-	}
+        }
+        else {
+            print STDERR "Extension Key has 0 length, value is: " . $value
+              . "\n";
+        }
     }
 }
 
 # Now print the Extension objects - the order is random but it doesn't matter
 
-my $ext = 0;
+my $ext  = 0;
 my $ELID = "0";
-while ( my ($key, $value) = each(%items) ) {
-# Extensions only need a local ID - but note that the Key may not be unique
+while ( my ( $key, $value ) = each(%items) ) {
+
+    # Extensions only need a local ID - but note that the Key may not be unique
     $ext++;
     $ELID = $key . "_" . $ext;
-    print "dn: GLUE2ExtensionLocalID=$ELID,GLUE2EndpointID=$EUID,GLUE2ServiceID=$UID,$bind_dn\n";
+    print
+"dn: GLUE2ExtensionLocalID=$ELID,GLUE2EndpointID=$EUID,GLUE2ServiceID=$UID,$bind_dn\n";
     print "objectClass: GLUE2Extension\n";
     print "GLUE2ExtensionLocalID: $ELID\n";
     print "GLUE2ExtensionKey: $key\n";
-    if (length($value) > 0) {
+    if ( length($value) > 0 ) {
         print "GLUE2ExtensionValue: $value\n";
-    }else{
-# We are required to print a value
+    }
+    else {
+        # We are required to print a value
         print "GLUE2ExtensionValue: UNDEFINEDVALUE\n";
     }
     print "GLUE2ExtensionEntityForeignKey: $EUID\n";
@@ -656,7 +686,8 @@ my $APUID = $EUID . "_AP";
 
 # Start with the DN ...
 
-print "dn: GLUE2PolicyID=$APUID,GLUE2EndpointID=$EUID,GLUE2ServiceID=$UID,$bind_dn\n";
+print
+"dn: GLUE2PolicyID=$APUID,GLUE2EndpointID=$EUID,GLUE2ServiceID=$UID,$bind_dn\n";
 
 # Print the boilerplate objectclass declarations and unique ID
 
@@ -697,17 +728,17 @@ my $rules = 0;
 foreach (@ACBR) {
     s/^\s+//;
     s/\s+$//;
-    if (length > 240) {
-        $_ = substr($_, 0, 239) . "4444";
+    if ( length > 240 ) {
+        $_ = substr( $_, 0, 239 ) . "4444";
     }
     if ($_) {
-	$rules++;
+        $rules++;
         print "GLUE2PolicyRule: $_\n";
     }
 }
 
 # "ALL" is a reserved word meaning that there is no authz
-if ($rules == 0) {
+if ( $rules == 0 ) {
     print "GLUE2PolicyRule: ALL\n";
 }
 
@@ -719,19 +750,19 @@ if ($rules == 0) {
 $rules = 0;
 foreach (@Owner) {
     s/\s+//g;
-    if (length > 240) {
-	$_ = substr($_, 0, 239) . "4444";
+    if ( length > 240 ) {
+        $_ = substr( $_, 0, 239 ) . "4444";
     }
     if ($_) {
-	$rules++;
-	print "GLUE2PolicyUserDomainForeignKey: $_\n";
+        $rules++;
+        print "GLUE2PolicyUserDomainForeignKey: $_\n";
     }
 }
 
 # The spec says that there must be at least one UserDomain reference,
 # which is probably a mistake! We should try to avoid this being a valid
 # VO name ...
-if ($rules == 0) {
+if ( $rules == 0 ) {
     print "GLUE2PolicyUserDomainForeignKey: \$UNDEFINED\$\n";
 }
 

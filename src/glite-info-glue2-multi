@@ -1,6 +1,5 @@
 #!/usr/bin/perl -w
 
-#
 # glite-info-glue2-multi: a script to generate a GLUE 2
 # Service object with multiple Endpoints
 #
@@ -55,8 +54,9 @@ use FileHandle;
 my $command;
 
 # Only the first two arguments are mandatory
-if (! $ARGV[1]) {
-    print STDERR "Usage: glite-info-glue2-multi <endpoint-config-file>[,<endpoint-config-file>[,...]] [<site-ID>] [<service-config-file>] [<service-ID> [<endpoint-ID>[ <endpoint-ID>[ ...]]]]\n";
+if ( !$ARGV[1] ) {
+    print STDERR
+"Usage: glite-info-glue2-multi <endpoint-config-file>[,<endpoint-config-file>[,...]] [<site-ID>] [<service-config-file>] [<service-ID> [<endpoint-ID>[ <endpoint-ID>[ ...]]]]\n";
     exit 1;
 }
 
@@ -68,9 +68,9 @@ my @ConfigFiles = split /,/, $Config;
 
 # Simple check on the readability of the files
 foreach (@ConfigFiles) {
-    if (!(-r $_)) {
-	print STDERR "Error: Configuration file $_ is not readable\n";
-	exit 2;
+    if ( !( -r $_ ) ) {
+        print STDERR "Error: Configuration file $_ is not readable\n";
+        exit 2;
     }
 }
 
@@ -83,19 +83,23 @@ my $SID = "";
 my $Service_conf = shift @ARGV;
 
 # If it isn't openable as a file it must be an ID
-if (!(-r $Service_conf)) {
+if ( !( -r $Service_conf ) ) {
     $DID = $Service_conf;
-# Try again with the next argument
+
+    # Try again with the next argument
     $Service_conf = shift @ARGV;
-# If it isn't openable as a file it must be an ID (is there an echo?)
-    if ($Service_conf && (!(-r $Service_conf))) {
-	$SID = $Service_conf;
-	$Service_conf = "";
-    } else {
-	$SID =  shift @ARGV;
+
+    # If it isn't openable as a file it must be an ID (is there an echo?)
+    if ( $Service_conf && ( !( -r $Service_conf ) ) ) {
+        $SID          = $Service_conf;
+        $Service_conf = "";
     }
-} else {
-    $SID =  shift @ARGV;
+    else {
+        $SID = shift @ARGV;
+    }
+}
+else {
+    $SID = shift @ARGV;
 }
 
 # If anything is left they must be Endpoint IDs (NB no check on the number)
@@ -111,33 +115,37 @@ $SID =~ s/\s+//g if ($SID);
 
 # Config items are commands to be executed - "echo" is a no-op
 my %config = (
-        get_site_id => 'echo',
-        get_service_id => 'echo',
-        get_capability => 'echo',
-        get_type => 'echo',
-        get_qualitylevel => 'echo',
-        get_statusinfo => 'echo',
-        get_complexity => 'echo',
-        get_otherinfo => 'echo'
-	      );
+    get_site_id      => 'echo',
+    get_service_id   => 'echo',
+    get_capability   => 'echo',
+    get_type         => 'echo',
+    get_qualitylevel => 'echo',
+    get_statusinfo   => 'echo',
+    get_complexity   => 'echo',
+    get_otherinfo    => 'echo'
+);
 
 # Process the service config file if it exists
 
 if ($Service_conf) {
-    my $fh = new FileHandle $Service_conf
-	or die "Error: Can't open configuration file: $Service_conf\n";
+    my $fh = FileHandle->($Service_conf)
+      or die "Error: Can't open configuration file: $Service_conf\n";
     foreach (<$fh>) {
-# For lines containing an = and not starting with #
-	if ((! m/^\#/) & (m/=/)) {
-# Split on the first =, no leading or trailing whitespace in the value
-	    m/^(.*?)=\s*(.*)\s*$/;
-	    my $key = $1;
-	    my $value = $2;
-# No whitespace at all in the key
-	    $key =~ s/\s+//g;
-# Replace the default defined above
-	    $config{$key} = $value;
-	}
+
+        # For lines containing an = and not starting with #
+        if ( ( !m/^\#/ ) & (m/=/) ) {
+
+          # Split on the first =, no leading or trailing whitespace in the value
+            m/^(.*?)=\s*(.*)\s*$/;
+            my $key   = $1;
+            my $value = $2;
+
+            # No whitespace at all in the key
+            $key =~ s/\s+//g;
+
+            # Replace the default defined above
+            $config{$key} = $value;
+        }
     }
 }
 
@@ -150,14 +158,15 @@ my $Type = `$command`;
 $Type =~ s/\s+//g;
 
 # For the DomainID an explicit argument takes precedence over the config file
-if (!$DID) {
+if ( !$DID ) {
     $command = $config{get_site_id};
-    $DID = `$command`;
+    $DID     = `$command`;
     $DID =~ s/\s+//g;
 }
 
-if (!$DID) {
-# No  sensible default possible, this must be configured
+if ( !$DID ) {
+
+    # No  sensible default possible, this must be configured
     print STDERR "Error: Site name (DomainID) not specified\n";
     exit 3;
 }
@@ -168,38 +177,44 @@ if (!$DID) {
 $ENV{"GLITE_INFO_SERVICE_SITE_ID"} = $DID;
 
 # Similarly for the ServiceID an explicit argument takes precedence
-if (!$SID) {
+if ( !$SID ) {
     $command = $config{get_service_id};
-    $SID = `$command`;
+    $SID     = `$command`;
     $SID =~ s/\s+//g;
 }
 
-if (!$SID) {
+if ( !$SID ) {
+
 # This time we can construct a default, made from the host name, service type and
 # a checksum of the Endpoint config files
     my $host = `hostname -f`;
     chomp($host);
-    if (!$host) {
-# If we can't get a local hostname at all we can't construct a unique ID
+    if ( !$host ) {
+
+        # If we can't get a local hostname at all we can't construct a unique ID
         print STDERR "Error: hostname -f returned a null string\n";
         exit 99;
     }
-# We checked above that the config files are readable
+
+    # We checked above that the config files are readable
     my $check = `cat @ConfigFiles | cksum | cut -d\" \" -f 1`;
     chomp($check);
     my $typeguess = $Type;
-    if (!$typeguess) {
+    if ( !$typeguess ) {
+
 # If the Type isn't configured we assume that the first config file name follows the
 # standard convention with the type name embedded ...
-	$ConfigFiles[0] =~ m/glite-info-\w+-(.+).conf/;
-	$typeguess = $1;
+        $ConfigFiles[0] =~ m/glite-info-\w+-(.+).conf/;
+        $typeguess = $1;
     }
-    if (!$typeguess) {
-# ... or if not it doesn't really matter, it's just cosmetic
-	$typeguess = "unknown";
+    if ( !$typeguess ) {
+
+        # ... or if not it doesn't really matter, it's just cosmetic
+        $typeguess = "unknown";
     }
-# Note that this may cause trouble if hostname -f does not return an fqdn,
-# but I think that is normally required by other things anyway 
+
+    # Note that this may cause trouble if hostname -f does not return an fqdn,
+    # but I think that is normally required by other things anyway
     $SID = $host . "_" . $typeguess . "_" . $check;
 }
 
@@ -235,12 +250,15 @@ my @endpoint_ldif = "";
 my $EID;
 
 foreach (@ConfigFiles) {
-# Use the next Endpoint ID if provided, otherwise it will be auto-generated
+
+    # Use the next Endpoint ID if provided, otherwise it will be auto-generated
     $EID = shift @EIDs;
-# Void values seem to make perl choke, so make sure it's a null string
-    $EID = "" if (!$EID);
+
+    # Void values seem to make perl choke, so make sure it's a null string
+    $EID = "" if ( !$EID );
     $EID =~ s/\s+//g;
-    @endpoint_ldif = (@endpoint_ldif, `glite-info-glue2-endpoint $_ $SID $EID`);
+    @endpoint_ldif =
+      ( @endpoint_ldif, `glite-info-glue2-endpoint $_ $SID $EID` );
 }
 
 # Various attributes need to be collected out of the Endpoints to be
@@ -257,52 +275,61 @@ my $BestQL = "UNDEFINEDVALUE";
 my $QLnum;
 my $QLmax = 0;
 my %QLmap = (
-        "development" => 1,
-        "testing" => 2,
-        "pre-production" => 3,
-        "production" => 4
-    );
+    "development"    => 1,
+    "testing"        => 2,
+    "pre-production" => 3,
+    "production"     => 4
+);
 
 my $Cap;
 
 # Read through the LDIF and look for the relevant attributes
 foreach (@endpoint_ldif) {
-    if ( m/^GLUE2EndpointInterfaceName:/) {
-	($Attr, $TypeName) = split /:/, $_, 2;
-	$TypeName =~ s/\s+//g;
-# Record each Endpoint type (InterfaceName) in a hash
-	$TypeList{$TypeName} = 1;
-# The first type name we hit will be the default Service Type
-	$FirstType = $TypeName if (!$FirstType);
-    } elsif ( m/^GLUE2EndpointQualityLevel:/ ) {
-        ($Attr, $QL) = split /:/, $_, 2;
+    if (m/^GLUE2EndpointInterfaceName:/) {
+        ( $Attr, $TypeName ) = split /:/, $_, 2;
+        $TypeName =~ s/\s+//g;
+
+        # Record each Endpoint type (InterfaceName) in a hash
+        $TypeList{$TypeName} = 1;
+
+        # The first type name we hit will be the default Service Type
+        $FirstType = $TypeName if ( !$FirstType );
+    }
+    elsif (m/^GLUE2EndpointQualityLevel:/) {
+        ( $Attr, $QL ) = split /:/, $_, 2;
         $QL =~ s/\s+//g;
-# Convert the textual QL to a number (closed enumeration)
+
+        # Convert the textual QL to a number (closed enumeration)
         $QLnum = $QLmap{$QL};
-# The Service QualityLevel is the best QL of any Endpoint
-        if ( $QLnum > $QLmax ){
-            $QLmax = $QLnum;
+
+        # The Service QualityLevel is the best QL of any Endpoint
+        if ( $QLnum > $QLmax ) {
+            $QLmax  = $QLnum;
             $BestQL = $QL;
         }
-    } elsif ( m/^GLUE2EndpointCapability:/ ) {
-	($Attr, $Cap) = split /:/, $_, 2;
-	$Cap =~ s/\s+//g;
-# The Service accumulates all the (distinct) Capabilities of its Endpoints
-        if ( !($Capabilities =~ m/,$Cap/) ) {
-# Make a comma-separated list (with a leading comma)
-	    $Capabilities = $Capabilities . "," . $Cap;
-	}
+    }
+    elsif (m/^GLUE2EndpointCapability:/) {
+        ( $Attr, $Cap ) = split /:/, $_, 2;
+        $Cap =~ s/\s+//g;
+
+      # The Service accumulates all the (distinct) Capabilities of its Endpoints
+        if ( !( $Capabilities =~ m/,$Cap/ ) ) {
+
+            # Make a comma-separated list (with a leading comma)
+            $Capabilities = $Capabilities . "," . $Cap;
+        }
     }
 }
 
 # If the ServiceType wasn't set in the config file just take the
 # InterfaceName of the first Endpoint
-if (!$Type) {
+if ( !$Type ) {
     $Type = $FirstType;
 }
 
-if (!$Type) {
-# This should be impossible, but ...
+if ( !$Type ) {
+
+    # This should be impossible, but ...
     $Type = "UNDEFINEDVALUE";
 }
 
@@ -310,14 +337,15 @@ if (!$Type) {
 $Type = $Type . $Capabilities;
 
 # Allow an override from the config file
-if (!$QualityLevel) {
+if ( !$QualityLevel ) {
     $QualityLevel = $BestQL;
 }
 
 # Allow an override from the config file
-if (!$Complexity) {
-# Complexity is basically the number of Endpoint types
-    $Complexity = scalar(keys(%TypeList));
+if ( !$Complexity ) {
+
+    # Complexity is basically the number of Endpoint types
+    $Complexity = scalar( keys(%TypeList) );
 }
 
 # Concatenate the QualityLevel and Complexity
@@ -327,20 +355,22 @@ my $EndpointInfo = $QualityLevel . "," . $Complexity;
 foreach (@SI) {
     s/\s+//g;
     if ($_) {
-	$EndpointInfo = $EndpointInfo . "," . $_;
+        $EndpointInfo = $EndpointInfo . "," . $_;
     }
 }
 
 # And finally see if there are any OtherInfo strings
 my $OtherInfo = "";
 foreach (@OI) {
-# These might contain white space so we should quote them
+
+    # These might contain white space so we should quote them
     $OtherInfo = $OtherInfo . '"' . $_ . '"' . " ";
 }
 
 # Execute the Service provider, again catching the output
 # (The service LDIF could just be printed directly but this seems more consistent)
-my @service_ldif = `glite-info-glue2-service $DID $SID $Type $EndpointInfo $OtherInfo`;
+my @service_ldif =
+  `glite-info-glue2-service $DID $SID $Type $EndpointInfo $OtherInfo`;
 
 # Finally just print the LDIF back to stdout
 

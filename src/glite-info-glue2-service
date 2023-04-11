@@ -1,6 +1,5 @@
 #!/usr/bin/perl -w
 
-#
 # glite-info-glue2-service: an information provider for the Service
 # object, in v 2.0 of the GLUE schema
 #
@@ -65,8 +64,9 @@ my $validity = "3600";
 
 # Process the arguments - must be at least 4
 
-if (!($ARGV[3])){
-    print STDERR "Usage: glite-info-glue2-service <site-ID> <service-ID> <service-type> <endpoint-info> [<other-info> [<other-info>] ...]\n";
+if ( !( $ARGV[3] ) ) {
+    print STDERR
+"Usage: glite-info-glue2-service <site-ID> <service-ID> <service-type> <endpoint-info> [<other-info> [<other-info>] ...]\n";
     exit 1;
 }
 
@@ -97,7 +97,7 @@ $TypeCap =~ s/\s+//g;
 # NB Assumes that commas are not allowed in these attributes
 
 my @Capabilities = split /,/, $TypeCap;
-my $Type = shift @Capabilities;
+my $Type         = shift @Capabilities;
 
 my $EndpointInfo = shift @ARGV;
 
@@ -108,33 +108,35 @@ $EndpointInfo =~ s/\s+//g;
 # optional StatusInfo endpoints, comma-separated
 # NB Assumes that commas are not allowed in these attributes
 
-my @Info = split /,/, $EndpointInfo;
+my @Info         = split /,/, $EndpointInfo;
 my $QualityLevel = shift @Info;
-my $Complexity = shift @Info;
+my $Complexity   = shift @Info;
 
-if (!$Complexity) {
+if ( !$Complexity ) {
     $Complexity = 1;
 }
 
 # Split the Complexity into its three components
-(my $EndpointCount, my $ShareCount, my $ResourceCount) = split /:/, $Complexity, 3;
+( my $EndpointCount, my $ShareCount, my $ResourceCount ) = split /:/,
+  $Complexity, 3;
 
-if (!$EndpointCount) {
+if ( !$EndpointCount ) {
     $EndpointCount = 0;
 }
 
-if (!$ShareCount) {
+if ( !$ShareCount ) {
     $ShareCount = 0;
 }
 
-if (!$ResourceCount) {
+if ( !$ResourceCount ) {
     $ResourceCount = 0;
 }
 
 # Check that we still have non-null values where necessary
 
-if (!$SiteID || !$UID || !$Type || !$QualityLevel) {
-    print STDERR "Usage: glite-info-glue2-service <site-ID> <service-ID> <service-type> <endpoint-info> [<other-info> [<other-info>] ...]\n";
+if ( !$SiteID || !$UID || !$Type || !$QualityLevel ) {
+    print STDERR
+"Usage: glite-info-glue2-service <site-ID> <service-ID> <service-type> <endpoint-info> [<other-info> [<other-info>] ...]\n";
     exit 2;
 }
 
@@ -156,9 +158,10 @@ print "objectClass: GLUE2Service\n";
 # ComputingService and StorageService. The real things will need
 # a lot more work.
 
-if ($Type eq "org.glite.ce") {
+if ( $Type eq "org.glite.ce" ) {
     print "objectClass: GLUE2ComputingService\n";
-} elsif ($Type eq "org.glite.se") {
+}
+elsif ( $Type eq "org.glite.se" ) {
     print "objectClass: GLUE2StorageService\n";
 }
 
@@ -171,7 +174,7 @@ print "GLUE2ServiceID: $UID\n";
 # Creation time and validity are standard attributes for all objects
 
 # Times are mandated to be UTC only
-my $TimeNow = strftime("%Y-%m-%dT%H:%M:%SZ", gmtime());
+my $TimeNow = strftime( "%Y-%m-%dT%H:%M:%SZ", gmtime() );
 print "GLUE2EntityCreationTime: $TimeNow\n";
 
 # Validity is currently hardwired above
@@ -199,18 +202,20 @@ print "GLUE2EntityOtherInfo: ProfileVersion=$profileversion\n";
 # Print any more OtherInfo
 
 foreach (@OtherInfo) {
-# Basically just print this as it comes, but no leading or trailing white
-# space and no blank lines
+
+    # Basically just print this as it comes, but no leading or trailing white
+    # space and no blank lines
     s/^\s+//;
     s/\s+$//;
     if ($_) {
-	print "GLUE2EntityOtherInfo: $_\n";
+        print "GLUE2EntityOtherInfo: $_\n";
     }
 }
 
 foreach (@Capabilities) {
-# Should be no need for validation as it will be fixed per service type,
-# but make sure we don't emit a blank string as it isn't valid LDIF
+
+    # Should be no need for validation as it will be fixed per service type,
+    # but make sure we don't emit a blank string as it isn't valid LDIF
     if ($_) {
         print "GLUE2ServiceCapability: $_\n";
     }
@@ -221,16 +226,18 @@ print "GLUE2ServiceType: $Type\n";
 print "GLUE2ServiceQualityLevel: $QualityLevel\n";
 
 foreach (@Info) {
-# This is supposed to be a URL but we'll print it as it comes,
-# but make sure we don't emit a blank string as it isn't valid LDIF
+
+    # This is supposed to be a URL but we'll print it as it comes,
+    # but make sure we don't emit a blank string as it isn't valid LDIF
     if ($_) {
-	print "GLUE2ServiceStatusInfo: $_\n";
+        print "GLUE2ServiceStatusInfo: $_\n";
     }
 }
 
 # These should be integers, but just print whatever we got
 
-print "GLUE2ServiceComplexity: endpointType=$EndpointCount, share=$ShareCount, resource=$ResourceCount\n";
+print
+"GLUE2ServiceComplexity: endpointType=$EndpointCount, share=$ShareCount, resource=$ResourceCount\n";
 
 # Upward reference to the hosting site (AdminDomain)
 
@@ -240,7 +247,8 @@ print "GLUE2ServiceAdminDomainForeignKey: $SiteID\n";
 # Other relations will point to the Service and not from it
 
 foreach (@RelatedServices) {
-# Make sure we don't emit a blank string as it isn't valid LDIF
+
+    # Make sure we don't emit a blank string as it isn't valid LDIF
     if ($_) {
         print "GLUE2ServiceServiceForeignKey: $_\n";
     }

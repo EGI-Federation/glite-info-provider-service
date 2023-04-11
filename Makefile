@@ -13,8 +13,8 @@ install:
 	@mkdir -p $(prefix)/etc/glite/info/service/
 	@mkdir -p $(prefix)/usr/share/doc/$(NAME)-$(VERSION)
 	@mkdir -p $(prefix)/usr/share/licenses/$(NAME)-$(VERSION)
-	@install -m 0755 src/$(NAME) $(prefix)/usr/bin
-	@install -m 0755 src/$(NAME)-* $(prefix)/usr/bin
+	@install -m 0755 src/glite-info-service $(prefix)/usr/bin
+	@install -m 0755 src/glite-info-service-* $(prefix)/usr/bin
 	@install -m 0755 src/glite-info-glue2-* $(prefix)/usr/bin
 	@install -m 0644 etc/*.template $(prefix)/etc/glite/info/service/
 	@install -m 0644 etc/*.test.ldif* $(prefix)/etc/glite/info/service/

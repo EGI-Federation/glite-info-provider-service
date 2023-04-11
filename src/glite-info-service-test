@@ -7,15 +7,15 @@
 # Define a variable GLITE_INFO_SERVICE_STATUS_XXX with a message string
 # where XXX is the service name
 
-if [ "x$1" == "x" ]; then
-    exit
+if [ "$1" == "" ]; then
+	exit
 fi
 
-eval SERVICE_STATUS=\$GLITE_INFO_SERVICE_STATUS_$1
+eval SERVICE_STATUS=\$GLITE_INFO_SERVICE_STATUS_"$1"
 
-if [ "x$SERVICE_STATUS" == "x" ]; then
-    exit
+if [ "$SERVICE_STATUS" == "" ]; then
+	exit
 else
-    echo $SERVICE_STATUS
-    exit 2
+	echo "$SERVICE_STATUS"
+	exit 2
 fi
