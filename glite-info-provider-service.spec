@@ -107,7 +107,7 @@ rm -rf %{buildroot}
 %license %{_datadir}/licenses/%{name}-%{version}/LICENSE.txt
 
 %changelog
-* Mon Apr 03 2023 Baptiste Grenier <baptiste.grenier@egi.eu> - 1.14.0-1
+* Tue Apr 11 2023 Baptiste Grenier <baptiste.grenier@egi.eu> - 1.14.0-1
 - Drop some deprecated providers (gatekeeper, gridice, lbserver, wmproxy). (#3) (Baptiste Grenier)
 - Lint code. (#3) (Enol Fernandez) (Baptiste Grenier)
 - Add Community files and GitHub actions. (#2) (Baptiste Grenier)
