@@ -108,6 +108,8 @@ rm -rf %{buildroot}
 
 %changelog
 * Mon Apr 03 2023 Baptiste Grenier <baptiste.grenier@egi.eu> - 1.14.0-1
+- Drop some deprecated providers (gatekeeper, gridice, lbserver, wmproxy). (#3) (Baptiste Grenier)
+- Lint code. (#3) (Enol Fernandez) (Baptiste Grenier)
 - Add Community files and GitHub actions. (#2) (Baptiste Grenier)
 - Build and release using CentOS 7, AlmaLinux 8 and 9. (#2) (Baptiste Grenier)
 
