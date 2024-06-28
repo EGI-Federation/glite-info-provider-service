@@ -96,5 +96,5 @@ jobs:
           name: rpms9
       - name: Install generated RPMs
         run: |
-          yum install epel-release
+          yum install -y epel-release
           yum localinstall -y glite-info-provider-service-*.el9.noarch.rpm
