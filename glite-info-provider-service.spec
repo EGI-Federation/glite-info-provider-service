@@ -1,5 +1,5 @@
 Name:          glite-info-provider-service
-Version:       1.14.0
+Version:       1.14.1
 Release:       1%{?dist}
 Summary:       The GLUE service information provider
 Group:         Development/Libraries
@@ -111,6 +111,9 @@ rm -rf %{buildroot}
 %license %{_datadir}/licenses/%{name}-%{version}/LICENSE.txt
 
 %changelog
+* Tue Apr 28 2024 Baptiste Grenier <baptiste.grenier@egi.eu> - 1.14.1-1
+- Add missing dependencies for EL9. (#7) (Baptiste Grenier)
+
 * Tue Apr 11 2023 Baptiste Grenier <baptiste.grenier@egi.eu> - 1.14.0-1
 - Drop some deprecated providers (gatekeeper, gridice, lbserver, wmproxy). (#3) (Baptiste Grenier)
 - Lint code. (#3) (Enol Fernandez) (Baptiste Grenier)
