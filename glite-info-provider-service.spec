@@ -10,14 +10,13 @@ BuildArch:     noarch
 BuildRoot:     %{_tmppath}/%{name}-%{version}-build
 BuildRequires: rsync
 BuildRequires: make
-%if 0%{?rhel} <= 9
+%if 0%{?rhel} <= 8
 Requires: redhat-lsb-core
-%else
-Requires: lsb_release
 %endif
 %if 0%{?rhel} >= 9
 Requires: hostname
 Requires: initscripts-service
+Requires: lsb_release
 %endif
 
 %description
