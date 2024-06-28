@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [1.14.2] - 2024-06-28
+
+## Fixed
+
+- Add missing dependency on lsb_release. (#11) (Baptiste Grenier)
+
 ## [1.14.1] - 2024-06-28
 
 ## Added

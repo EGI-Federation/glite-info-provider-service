@@ -84,6 +84,7 @@ jobs:
         run: |
           yum localinstall -y glite-info-provider-service-*.el8.noarch.rpm
 
+  # XXX: get lsb_release from EPEL
   install-almalinux9:
     name: Install AlmaLinux 9 RPMs
     needs: build-almalinux
@@ -95,4 +96,5 @@ jobs:
           name: rpms9
       - name: Install generated RPMs
         run: |
+          yum install epel-release
           yum localinstall -y glite-info-provider-service-*.el9.noarch.rpm
