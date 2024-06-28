@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [1.14.1] - 2024-06-28
+
+## Added
+
+- Add missing dependencies for EL9. (#7) (Baptiste Grenier)
+
 ## [1.14.0] - 2023-04-11
 
 ## Added
