@@ -1,5 +1,5 @@
 Name:          glite-info-provider-service
-Version:       1.14.1
+Version:       1.14.2
 Release:       1%{?dist}
 Summary:       The GLUE service information provider
 Group:         Development/Libraries
@@ -10,9 +10,13 @@ BuildArch:     noarch
 BuildRoot:     %{_tmppath}/%{name}-%{version}-build
 BuildRequires: rsync
 BuildRequires: make
+%if 0%{?rhel} <= 8
+Requires: redhat-lsb-core
+%endif
 %if 0%{?rhel} >= 9
 Requires: hostname
 Requires: initscripts-service
+Requires: lsb_release
 %endif
 
 %description
@@ -111,6 +115,9 @@ rm -rf %{buildroot}
 %license %{_datadir}/licenses/%{name}-%{version}/LICENSE.txt
 
 %changelog
+* Tue Apr 28 2024 Baptiste Grenier <baptiste.grenier@egi.eu> - 1.14.2-1
+- Add missing dependency on lsb_release. (#11) (Baptiste Grenier)
+
 * Tue Apr 28 2024 Baptiste Grenier <baptiste.grenier@egi.eu> - 1.14.1-1
 - Add missing dependencies for EL9. (#7) (Baptiste Grenier)
 
