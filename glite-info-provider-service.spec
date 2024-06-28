@@ -10,6 +10,10 @@ BuildArch:     noarch
 BuildRoot:     %{_tmppath}/%{name}-%{version}-build
 BuildRequires: rsync
 BuildRequires: make
+%if 0%{?rhel} >= 9
+Requires: hostname
+Requires: initscripts-service
+%endif
 
 %description
 The GLUE service information provider
