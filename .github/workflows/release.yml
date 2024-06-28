@@ -51,7 +51,7 @@ jobs:
         run: |
           make clean rpm
       - name: Upload RPMs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: rpms8
           path: |
@@ -74,7 +74,7 @@ jobs:
         run: |
           make clean rpm
       - name: Upload RPMs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: rpms9
           path: |
@@ -99,7 +99,7 @@ jobs:
           echo "rpm_path=${rpm_path}" >> "$GITHUB_OUTPUT"
           echo "src_path=${src_path}" >> "$GITHUB_OUTPUT"
       - name: Attach CentOS 7 RPMs to the release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -115,7 +115,7 @@ jobs:
     needs: almalinux8
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: rpms8
       - name: Find package name
@@ -142,7 +142,7 @@ jobs:
     needs: almalinux9
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: rpms9
       - name: Find package name
