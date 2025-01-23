@@ -15,9 +15,8 @@ BDII documentation is available at
 On RHEL-based systems, it's possible to install packages from
 [EGI UMD packages](https://go.egi.eu/umd). The packages are build from this
 repository, and tested to work with other components part of the Unified
-Middleware Distribution.
-
-> On CentOS 7, some dependencies are in [EPEL](https://docs.fedoraproject.org/en-US/epel/).
+Middleware Distribution. Some dependencies may be retrieved from
+[EPEL](https://docs.fedoraproject.org/en-US/epel/).
 
 ## Building packages
 
@@ -36,7 +35,7 @@ $ git clone https://github.com/EGI-Foundation/glite-info-provider-service.git
 $ cd glite-info-provider-service
 $ git checkout X.X.X
 # Building in a container
-$ docker run --rm -v $(pwd):/source -it quay.io/centos/centos:7
+$ docker run --rm -v $(pwd):/source -it almalinux:9
 [root@8a9d60c61f42 /]# cd /source
 [root@8a9d60c61f42 /]# yum install -y rpm-build yum-utils
 [root@8a9d60c61f42 /]# yum-builddep -y glite-info-provider-service.spec
