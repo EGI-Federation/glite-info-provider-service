@@ -48,7 +48,7 @@ WSDL_URL = nohttp://not.a.web.service/
 # If the string does not start with "http" this will be omitted
 
 #semantics_URL = https://twiki.cern.ch/twiki/bin/view/EGEE/BDII
-semantics_URL = https://tomtools.cern.ch/confluence/display/IS/Home
+semantics_URL = https://github.com/EGI-Federation/bdii
 
 # StartTime: A command to return the service start time.
 # This should be a unix timestamp, the info provider converts it to ISO8601
