@@ -35,7 +35,7 @@ get_endpoint = echo ldap://$BDII_HOST:$BDII_PORT_READ/mds-vo-name=$GLITE_INFO_SE
 # The return code should indicate the status:
 # 0 = OK, 1 = Critical, 2 = Warning, 3 = Unknown, other = Other
 
-get_status = glite-info-service-test BDII && /sbin/service bdii status
+get_status = glite-info-service-test BDII && glite-info-service-status bdii
 
 # The URL of a WSDL document describing the service
 # If the string does not start with "http" this will be omitted
