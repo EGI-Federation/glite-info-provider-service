@@ -1,5 +1,5 @@
 Name:          glite-info-provider-service
-Version:       1.14.2
+Version:       1.15.0
 Release:       1%{?dist}
 Summary:       The GLUE service information provider
 Group:         Development/Libraries
@@ -115,6 +115,11 @@ rm -rf %{buildroot}
 %license %{_datadir}/licenses/%{name}-%{version}/LICENSE.txt
 
 %changelog
+* Fri Jan 24 2025 Baptiste Grenier <baptiste.grenier@egi.eu> - 1.15.0-1
+- Move the semantics URL to the new project repository on GitHub (#14) (Jérôme Pansanel)
+- Fix the service status when using systemd (#15) (Jérôme Pansanel)
+- Remove support for CentOS 7 (#16) (Baptiste Grenier)
+
 * Tue Apr 28 2024 Baptiste Grenier <baptiste.grenier@egi.eu> - 1.14.2-1
 - Add missing dependency on lsb_release. (#11) (Baptiste Grenier)
 

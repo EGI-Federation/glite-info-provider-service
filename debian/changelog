@@ -1,3 +1,11 @@
+glue-service-provider (1.15.0-1) UNRELEASED; urgency=low
+
+  * Move the semantics URL to the new project repository on GitHub (#14) (Jérôme Pansanel)
+  * Fix the service status when using systemd (#15) (Jérôme Pansanel)
+  * Remove support for CentOS 7 (#16) (Baptiste Grenier)
+
+ -- Baptiste Grenier <baptiste.grenier@egi.eu>  Fri, 24 Jan 2025 17:47:00 +0100
+
 glue-service-provider (1.14.0-1) UNRELEASED; urgency=low
 
   * Drop some deprecated providers (gatekeeper, gridice, lbserver, wmproxy). (#3) (Baptiste Grenier)

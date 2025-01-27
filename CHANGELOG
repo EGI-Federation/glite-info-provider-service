@@ -8,6 +8,17 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [1.15.0] - 2025-01-24
+
+## Fixed
+
+- Move the semantics URL to the new project repository on GitHub (#14) (Jérôme Pansanel)
+- Fix the service status when using systemd (#15) (Jérôme Pansanel)
+
+## Removed
+
+- Remove support for CentOS 7 (#16) (Baptiste Grenier)
+
 ## [1.14.2] - 2024-06-28
 
 ## Fixed
